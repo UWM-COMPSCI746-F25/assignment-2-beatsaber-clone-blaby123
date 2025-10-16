@@ -1,0 +1,73 @@
+[gd_scene load_steps=8 format=3 uid="uid://nkjdvux2pkia"]
+
+[ext_resource type="Script" uid="uid://dhj56lnu1tbrb" path="res://node_3d.gd" id="1_a202f"]
+[ext_resource type="Script" uid="uid://cfwuklolkoulw" path="res://xr_origin_3d.gd" id="2_noarx"]
+[ext_resource type="AudioStream" uid="uid://dxn53g063xwec" path="res://sharp-pop-328170.mp3" id="3_a0tk4"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a0tk4"]
+albedo_color = Color(0, 0, 1, 1)
+emission_enabled = true
+emission = Color(0, 0, 1, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_r3fl7"]
+material = SubResource("StandardMaterial3D_a0tk4")
+top_radius = 0.01
+bottom_radius = 0.02
+height = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jka67"]
+albedo_color = Color(1, 0, 0, 1)
+emission_enabled = true
+emission = Color(1, 0, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_i5arm"]
+top_radius = 0.01
+bottom_radius = 0.02
+height = 1.0
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_a202f")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5.70065)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(-1, 2.59973e-08, 8.34678e-08, 0, -0.954761, 0.297375, 8.74228e-08, 0.297375, 0.954761, 0, 1.91762, 1.52035)
+
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
+script = ExtResource("2_noarx")
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+transform = Transform3D(-1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0, 1, 0, 1.7, 0)
+
+[node name="left" type="XRController3D" parent="XROrigin3D"]
+tracker = &"left_hand"
+
+[node name="SwordRaycast" type="RayCast3D" parent="XROrigin3D/left"]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, -0.9)
+target_position = Vector3(0, 0, -1)
+hit_from_inside = true
+
+[node name="LaserVisual" type="MeshInstance3D" parent="XROrigin3D/left"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, -0.4)
+mesh = SubResource("CylinderMesh_r3fl7")
+
+[node name="right" type="XRController3D" parent="XROrigin3D"]
+tracker = &"right_hand"
+
+[node name="SwordRaycast" type="RayCast3D" parent="XROrigin3D/right"]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, -0.9)
+target_position = Vector3(0, 0, -1)
+hit_from_inside = true
+
+[node name="LaserVisual" type="MeshInstance3D" parent="XROrigin3D/right"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, -0.4)
+material_override = SubResource("StandardMaterial3D_jka67")
+mesh = SubResource("CylinderMesh_i5arm")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="XROrigin3D"]
+stream = ExtResource("3_a0tk4")
+
+[connection signal="button_pressed" from="XROrigin3D/left" to="XROrigin3D" method="_on_left_button_pressed"]
