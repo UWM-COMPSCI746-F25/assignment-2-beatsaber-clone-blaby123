@@ -18,6 +18,7 @@ func _ready():
 	if xr_interface.has_signal("pose_recentered"):
 		xr_interface.connect("pose_recentered", _on_openxr_pose_recentered)
 
+# pose recentering logic
 func _on_openxr_pose_recentered() -> void:
 	XRServer.center_on_hmd(XRServer.RESET_BUT_KEEP_TILT, true)
 	emit_signal("pose_recentered")
